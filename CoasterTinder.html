@@ -1,0 +1,1099 @@
+<html lang="nl"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎢 Coaster Tinder 🎢</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .keyboard-hint {
+            margin-top: 10px;
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .user-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+
+        .user-btn {
+            padding: 12px 30px;
+            border: 2px solid white;
+            background: transparent;
+            color: white;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .user-btn:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.05);
+        }
+
+        .user-btn.active {
+            background: white;
+            color: #667eea;
+        }
+
+        .current-user-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f5f5f5;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            background: none;
+        }
+
+        .tab:hover {
+            background: #e0e0e0;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 40px;
+            min-height: 500px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Battle Tab */
+        .battle-container {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            align-items: stretch;
+            flex-wrap: wrap;
+        }
+
+        .coaster-card {
+            flex: 1;
+            min-width: 300px;
+            max-width: 450px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            padding: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .coaster-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        .coaster-card.winner {
+            animation: winPulse 0.5s;
+        }
+
+        /*
+        
+        .coaster-card.left-card::before {
+            content: '← Linker pijltje';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(102, 126, 234, 0.2);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8em;
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+       
+
+        .coaster-card.right-card::before {
+            content: 'Rechter pijltje →';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(118, 75, 162, 0.2);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8em;
+            color: #764ba2;
+            font-weight: 600;
+        }
+
+         */
+
+        @keyframes winPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .coaster-name {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            min-height: 60px;
+        }
+
+        .coaster-info {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .coaster-info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .coaster-info-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #666;
+        }
+
+        .info-value {
+            color: #333;
+            text-align: right;
+        }
+
+        .choose-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .choose-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .vs-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+            min-width: 50px;
+        }
+
+        /* Ranking Tab */
+        .ranking-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stats-summary {
+            background: #f5f7fa;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .reset-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .reset-btn:hover {
+            background: #c82333;
+            transform: scale(1.05);
+        }
+
+        .ranking-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .ranking-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .ranking-table th:hover {
+            background: linear-gradient(135deg, #5568d3 0%, #653a8b 100%);
+        }
+
+        .ranking-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .ranking-table tr:hover {
+            background: #f5f7fa;
+        }
+
+        .rank-medal {
+            font-size: 1.2em;
+            margin-right: 5px;
+        }
+
+        .elo-score {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.1em;
+        }
+
+        .no-battles {
+            text-align: center;
+            padding: 60px;
+            color: #999;
+            font-size: 1.2em;
+        }
+
+        .search-box {
+            padding: 12px 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            width: 100%;
+            max-width: 400px;
+            transition: border 0.3s;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .filter-container {
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .battle-container {
+                flex-direction: column;
+            }
+
+            .vs-divider {
+                transform: rotate(90deg);
+                margin: 20px 0;
+            }
+
+            .coaster-card {
+                max-width: 100%;
+            }
+
+            .user-selector {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎢 Coaster Tinder 🎢</h1>
+            <p>Ontdek jouw favoriete achtbaan!</p>
+            <div class="user-selector">
+                <button class="user-btn" onclick="switchUser('luca')" id="btn-luca">👤 Luca</button>
+                <button class="user-btn" onclick="switchUser('wouter')" id="btn-wouter">👤 Wouter</button>
+            </div>
+            <div class="current-user-badge" id="currentUserBadge">Selecteer een gebruiker</div>
+            <p class="keyboard-hint">⌨️ Tip: Gebruik de pijltjestoetsen! ← Links | Rechts →</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('battle')">⚔️ Battle</button>
+            <button class="tab" onclick="switchTab('ranking')">🏆 Ranking</button>
+        </div>
+
+        <div id="battle-tab" class="tab-content active">
+            <div class="battle-container" id="battleContainer">
+                <div class="no-battles">Selecteer eerst een gebruiker hierboven! 👆</div>
+            </div>
+        </div>
+
+        <div id="ranking-tab" class="tab-content">
+            <div class="ranking-controls">
+                <div class="stats-summary">
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalBattles">0</div>
+                        <div class="stat-label">Totaal Battles</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalCoasters">0</div>
+                        <div class="stat-label">Achtbanen</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="avgBattlesPerCoaster">0</div>
+                        <div class="stat-label">Gem. Battles/Achtbaan</div>
+                    </div>
+                </div>
+                <button class="reset-btn" onclick="resetRankings()">🔄 Reset Alles</button>
+            </div>
+
+            <div class="filter-container">
+                <input type="text" class="search-box" id="searchBox" placeholder="🔍 Zoek achtbaan, park of fabrikant..." onkeyup="filterRanking()">
+            </div>
+
+            <table class="ranking-table" id="rankingTable">
+                <thead>
+                    <tr>
+                        <th onclick="sortRanking('rank')">Rank</th>
+                        <th onclick="sortRanking('name')">Naam</th>
+                        <th onclick="sortRanking('park')">Park</th>
+                        <th onclick="sortRanking('manufacturer')">Fabrikant</th>
+                        <th onclick="sortRanking('elo')">ELO ⬇️</th>
+                        <th onclick="sortRanking('battles')">Battles</th>
+                        <th onclick="sortRanking('wins')">Wins</th>
+                        <th onclick="sortRanking('losses')">Losses</th>
+                        <th onclick="sortRanking('winrate')">Win %</th>
+                    </tr>
+                </thead>
+                <tbody id="rankingBody">
+                    <tr><td colspan="9" class="no-battles">Selecteer eerst een gebruiker! 🎢</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Luca's coaster data
+        const coastersDataLuca = [
+            {"naam":"Der Schwur des Kärnan","park":"Hansa Park","fabrikant":"Gerstlauer","operatief":1},
+            {"naam":"Troy","park":"Toverland","fabrikant":"GCI","operatief":1},
+            {"naam":"Ride to Happiness","park":"Plopsaland DePanne","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Taron","park":"Phantasialand","fabrikant":"Intamin","operatief":1},
+            {"naam":"Hyperion","park":"Energylandia","fabrikant":"Intamin","operatief":1},
+            {"naam":"Voltron","park":"Europa Park","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Shambhala","park":"PortAventura","fabrikant":"B&M","operatief":1},
+            {"naam":"Colossos - Kampf der Giganten","park":"Heide Park","fabrikant":"Intamin","operatief":1},
+            {"naam":"Zadra","park":"Energylandia","fabrikant":"RMC","operatief":1},
+            {"naam":"Red Force","park":"Ferrari Land","fabrikant":"Intamin","operatief":1},
+            {"naam":"Kondaa","park":"Walibi Belgium","fabrikant":"Intamin","operatief":1},
+            {"naam":"Flucht von Novgorod","park":"Hansa Park","fabrikant":"Gerstlauer","operatief":1},
+            {"naam":"Untamed","park":"Walibi Holland","fabrikant":"RMC","operatief":1},
+            {"naam":"Rutschebanen","park":"Tivoli Gardens","fabrikant":"Valdemar Lebech","operatief":1},
+            {"naam":"F.L.Y.","park":"Phantasialand","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Baron 1898","park":"Efteling","fabrikant":"B&M","operatief":1},
+            {"naam":"Vertigo","park":"Walibi Belgium","fabrikant":"Doppelmayr","operatief":0},
+            {"naam":"Black  Mamba","park":"Phantasialand","fabrikant":"B&M","operatief":1},
+            {"naam":"Abyssus","park":"Energylandia","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Karacho","park":"Tripsdrill","fabrikant":"Gerstlauer","operatief":1},
+            {"naam":"Cancan Coaster","park":"Europa Park","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Flug der Dämonen","park":"Heide Park","fabrikant":"B&M","operatief":1},
+            {"naam":"Fenix","park":"Toverland","fabrikant":"B&M","operatief":1},
+            {"naam":"Wodan Timber Coaster","park":"Europa Park","fabrikant":"GCI","operatief":1},
+            {"naam":"Expedition GeForce","park":"Holiday Park","fabrikant":"Intamin","operatief":1},
+            {"naam":"Van Helsing's Factory","park":"Moviepark Germany","fabrikant":"Gerstlauer","operatief":1},
+            {"naam":"Dragon Khan","park":"PortAventura","fabrikant":"B&M","operatief":1},
+            {"naam":"Anubis the Ride","park":"Plopsaland DePanne","fabrikant":"Gerstlauer","operatief":1},
+            {"naam":"Turbine","park":"Walibi Belgium","fabrikant":"Schwarzkopf","operatief":0},
+            {"naam":"Blue Fire","park":"Europa Park","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Silver Star","park":"Europa Park","fabrikant":"B&M","operatief":1},
+            {"naam":"Hals-über-Kopf","park":"Tripsdrill","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Heidi the Ride","park":"Plopsaland DePanne","fabrikant":"GCI","operatief":1},
+            {"naam":"Gold Rush","park":"Slagharen","fabrikant":"Gerstlauer","operatief":1},
+            {"naam":"Cop Car Chase","park":"Moviepark Germany","fabrikant":"Intamin","operatief":0},
+            {"naam":"Olympia Looping","park":"Prater Park","fabrikant":"Schwarzkopf","operatief":1},
+            {"naam":"ARTHUR","park":"Europa Park","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Furius Baco","park":"PortAventura","fabrikant":"Intamin","operatief":1},
+            {"naam":"Nessie","park":"Hansa Park","fabrikant":"Schwarzkopf","operatief":1},
+            {"naam":"Goliath","park":"Walibi Holland","fabrikant":"Intamin","operatief":1},
+            {"naam":"De Vliegende Hollander","park":"Efteling","fabrikant":"KumbaK","operatief":1},
+            {"naam":"Krake","park":"Heide Park","fabrikant":"B&M","operatief":1},
+            {"naam":"Booster Bike","park":"Toverland","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Dwervelwind","park":"Toverland","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Speed","park":"Energylandia","fabrikant":"Intamin","operatief":1},
+            {"naam":"Lost Gravity","park":"Walibi Holland","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"G'sengte Sau","park":"Tripsdrill","fabrikant":"Gerstlauer","operatief":1},
+            {"naam":"Joris en de draak - Water","park":"Efteling","fabrikant":"GCI","operatief":1},
+            {"naam":"Joris en de draak - Vuur","park":"Efteling","fabrikant":"GCI","operatief":1},
+            {"naam":"Euro-Mir","park":"Europa Park","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Uncharted","park":"PortAventura","fabrikant":"Intamin","operatief":1},
+            {"naam":"Fury","park":"Bobbejaanland","fabrikant":"Gerstlauer","operatief":1},
+            {"naam":"Swiss Bob Run","park":"Europa Park","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Tiki Waka","park":"Walibi Belgium","fabrikant":"Gerstlauer","operatief":1},
+            {"naam":"Speedy Bob","park":"Bobbejaanland","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Eurosat","park":"Europa Park","fabrikant":"Mack Rides","operatief":0},
+            {"naam":"Matterhorn Blitz","park":"Europa Park","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Atlantica SuperSplash","park":"Europa Park","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Colorado Adventure","park":"Phantasialand","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Calamity Mine","park":"Walibi Belgium","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Pegasus","park":"Efteling","fabrikant":"Intamin","operatief":0},
+            {"naam":"YOY Thrill","park":"Walibi Holland","fabrikant":"RMC","operatief":1},
+            {"naam":"Poseidon","park":"Europa Park","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Dragon Rollercoaster","park":"Energylandia","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Sky Scream","park":"Holiday Park","fabrikant":"Premier Rides","operatief":1},
+            {"naam":"Schlange von Midgard","park":"Hansa Park","fabrikant":"Gerstlauer","operatief":1},
+            {"naam":"The Milky Way Express","park":"Tivoli Gardens","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Typhoon","park":"Bobbejaanland","fabrikant":"Gerstlauer","operatief":1},
+            {"naam":"Python","park":"Efteling","fabrikant":"Vekoma","operatief":1},
+            {"naam":"YOY Chill","park":"Walibi Holland","fabrikant":"RMC","operatief":1},
+            {"naam":"Big Loop","park":"Heide Park","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Vampire","park":"Walibi Belgium","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Loup Garou","park":"Walibi Belgium","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Stampedia","park":"PortAventura","fabrikant":"CCI","operatief":1},
+            {"naam":"Vogelrok","park":"Efteling","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Dreamcatcher","park":"Bobbejaanland","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Revolution","park":"Bobbejaanland","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Winja's - Fear","park":"Phantasialand","fabrikant":"Mauer Rides","operatief":1},
+            {"naam":"Winja's - Force","park":"Phantasialand","fabrikant":"Mauer Rides","operatief":1},
+            {"naam":"Toos-Express","park":"Toverland","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Xpress: Platform 13","park":"Walibi Holland","fabrikant":"Vekoma","operatief":1},
+            {"naam":"De Bob","park":"Efteling","fabrikant":"Intamin","operatief":0},
+            {"naam":"Speed of Sound","park":"Walibi Holland","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Max","park":"Efteling","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Robin Hood","park":"Walibi Holland","fabrikant":"Vekoma","operatief":0},
+            {"naam":"Formula","park":"Energylandia","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Dæmonen","park":"Tivoli Gardens","fabrikant":"B&M","operatief":1},
+            {"naam":"Alpenexpress Enzian","park":"Europa Park","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Mammut","park":"Tripsdrill","fabrikant":"Zierer","operatief":1},
+            {"naam":"Temple of the Night Hawk","park":"Phantasialand","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Raik","park":"Phantasialand","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Volldampf","park":"Tripsdrill","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Boomerang","park":"Energylandia","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Cobra","park":"Walibi Belgium","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Bobbahn","park":"Heide Park","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Spyké Underground","park":"Walibi Belgium","fabrikant":"Gerstlauer","operatief":1},
+            {"naam":"Diablo - Tren de la Mina","park":"PortAventura","fabrikant":"Arrow","operatief":1},
+            {"naam":"Mayan","park":"Energylandia","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Condor","park":"Walibi Holland","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Limit","park":"Heide Park","fabrikant":"Vekoma","operatief":1},
+            {"naam":"MP-Xpress","park":"Moviepark Germany","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Tomahawk","park":"PortAventura","fabrikant":"CCI","operatief":1},
+            {"naam":"Rioolrat","park":"Hellendoorn","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Naga Bay","park":"Bobbejaanland","fabrikant":"Mauer Rides","operatief":1},
+            {"naam":"Bandit","park":"Moviepark Germany","fabrikant":"RCCA","operatief":1},
+            {"naam":"Light Explores","park":"Energylandia","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Crazy Mine","park":"Hansa Park","fabrikant":"Mauer Rides","operatief":1},
+            {"naam":"Gohst Chasers","park":"Moviepark Germany","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Mine Train","park":"Slagharen","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Jul's RollerSkates","park":"Juliana Toren","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Royal Scotsman","park":"Hansa Park","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Donderstenen","park":"Hellendoorn","fabrikant":"Zierer","operatief":1},
+            {"naam":"Grottenblitz","park":"Heide Park","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Indy-Blitz","park":"Heide Park","fabrikant":"Zierer","operatief":1},
+            {"naam":"Familieachtbaan","park":"BillyBird Park Hemelrijk","fabrikant":"ABC Rides","operatief":1},
+            {"naam":"Rasender Tausendfüßler","park":"Tripsdrill","fabrikant":"Zierer","operatief":1},
+            {"naam":"Fun Pilot","park":"Walibi Belgium","fabrikant":"Zamperla","operatief":1},
+            {"naam":"Tami-Tami","park":"PortAventura","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Ba-a-a Express","park":"Europa Park","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Fryda","park":"Energylandia","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Drako","park":"Walibi Holland","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Achterbahn","park":"Wunderland Kalkar","fabrikant":"Zamperla","operatief":1},
+            {"naam":"Junior Red Force","park":"Ferrari Land","fabrikant":"SBF Visa","operatief":1},
+            {"naam":"Energus","park":"Energylandia","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Draak","park":"Plopsaland DePanne","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Bob Express","park":"Bobbejaanland","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Oki Doki","park":"Bobbejaanland","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Kleine Zar","park":"Hansa Park","fabrikant":"Preston & Bareiri","operatief":1},
+            {"naam":"Volare","park":"Prater Park","fabrikant":"Zamperla","operatief":1},
+            {"naam":"Viking Rollercoaster","park":"Energylandia","fabrikant":"SBF Visa","operatief":1}
+        ];
+
+        // Wouter's coaster data
+        const coastersDataWouter = [
+            {"naam":"Der Schwur des Kärnan","park":"Hansa Park","fabrikant":"Gerstlauer","operatief":1},
+            {"naam":"Hyperion","park":"Energylandia","fabrikant":"Intamin","operatief":1},
+            {"naam":"Zadra","park":"Energylandia","fabrikant":"RMC","operatief":1},
+            {"naam":"Ride to Happiness","park":"Plopsaland de Panne","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Untamed","park":"Walibi Holland","fabrikant":"RMC","operatief":1},
+            {"naam":"Taron","park":"Phantasialand","fabrikant":"Intamin","operatief":1},
+            {"naam":"Voltron","park":"Europa-Park","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Shambhala","park":"PortAventura","fabrikant":"B&M","operatief":1},
+            {"naam":"Batman Gotham City Escape","park":"Parque Warner","fabrikant":"Intamin","operatief":1},
+            {"naam":"Kondaa","park":"Walibi Belgium","fabrikant":"Intamin","operatief":1},
+            {"naam":"Red Force","park":"Ferrari Land","fabrikant":"Intamin","operatief":1},
+            {"naam":"Troy","park":"Toverland","fabrikant":"GCI","operatief":1},
+            {"naam":"Flucht von Novgorod","park":"Hansa Park","fabrikant":"Gerstlauer","operatief":1},
+            {"naam":"F.L.Y.","park":"Phantasialand","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Fenix","park":"Toverland","fabrikant":"B&M","operatief":1},
+            {"naam":"Superman / la Atracción de Acero","park":"Parque Warner","fabrikant":"B&M","operatief":1},
+            {"naam":"Abyssus","park":"Energylandia","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Furius Baco","park":"PortAventura","fabrikant":"Intamin","operatief":1},
+            {"naam":"Colossos - Kampf der Giganten","park":"Heide Park","fabrikant":"Intamin","operatief":1},
+            {"naam":"Flug der Dämonen","park":"Heide Park","fabrikant":"B&M","operatief":1},
+            {"naam":"Dragon Khan","park":"PortAventura","fabrikant":"B&M","operatief":1},
+            {"naam":"Wodan Timbur Coaster","park":"Europa-Park","fabrikant":"GCI","operatief":1},
+            {"naam":"Black  Mamba","park":"Phantasialand","fabrikant":"B&M","operatief":1},
+            {"naam":"Karacho","park":"Tripsdrill","fabrikant":"Gerstlauer","operatief":1},
+            {"naam":"Anubis The Ride","park":"Plopsaland de Panne","fabrikant":"Gerstlauer","operatief":1},
+            {"naam":"Hals-über-Kopf","park":"Tripsdrill","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Goliath","park":"Walibi Holland","fabrikant":"Intamin","operatief":1},
+            {"naam":"Blue fire Megacoaster","park":"Europa-Park","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Baron 1898","park":"Efteling","fabrikant":"B&M","operatief":1},
+            {"naam":"Lost Gravity","park":"Walibi Holland","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Abismo","park":"Parque de attractiones","fabrikant":"Mauer Rides","operatief":1},
+            {"naam":"Shadow of Arkham","park":"Parque Warner","fabrikant":"B&M","operatief":1},
+            {"naam":"Van Helsing's Factory","park":"Moviepark Germany","fabrikant":"Gerstlauer","operatief":1},
+            {"naam":"Gold Rush","park":"Slagharen","fabrikant":"Gerstlauer","operatief":1},
+            {"naam":"Fury","park":"Bobbejaanland","fabrikant":"Gerstlauer","operatief":1},
+            {"naam":"De Vliegende Hollander","park":"Efteling","fabrikant":"KumbaK","operatief":1},
+            {"naam":"Olympia Looping","park":"Prater Park","fabrikant":"Schwarzkopf","operatief":1},
+            {"naam":"Joris en de draak - Water","park":"Efteling","fabrikant":"GCI","operatief":1},
+            {"naam":"Joris en de draak - Vuur","park":"Efteling","fabrikant":"GCI","operatief":1},
+            {"naam":"Formula","park":"Energylandia","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Eurosat - CanCan Coaster","park":"Europa-Park","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"YOY Thrill","park":"Walibi Holland","fabrikant":"RMC","operatief":1},
+            {"naam":"Silver Star","park":"Europa-Park","fabrikant":"B&M","operatief":1},
+            {"naam":"Stuntfall","park":"Parque Warner","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Revolution","park":"Bobbejaanland","fabrikant":"Vekoma","operatief":1},
+            {"naam":"YOY Chill","park":"Walibi Holland","fabrikant":"RMC","operatief":1},
+            {"naam":"Nessie","park":"Hansa Park","fabrikant":"Schwarzkopf","operatief":1},
+            {"naam":"Uncharted","park":"PortAventura","fabrikant":"Intamin","operatief":1},
+            {"naam":"Speed","park":"Energylandia","fabrikant":"Intamin","operatief":1},
+            {"naam":"Tarantula","park":"Parque de attractiones","fabrikant":"Mauer Rides","operatief":1},
+            {"naam":"Heide The Ride","park":"Plopsaland de Panne","fabrikant":"GCI","operatief":1},
+            {"naam":"Xpress: Platform 13","park":"Walibi Holland","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Arthur","park":"Europa-Park","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Dwervelwind","park":"Toverland","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Colorado Adventure","park":"Phantasialand","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Winja's - Fear","park":"Phantasialand","fabrikant":"Mauer Rides","operatief":1},
+            {"naam":"Winja's - Force","park":"Phantasialand","fabrikant":"Mauer Rides","operatief":1},
+            {"naam":"Dragon Roller Coaster","park":"Energylandia","fabrikant":"Vekoma","operatief":1},
+            {"naam":"De Bob","park":"Efteling","fabrikant":"Intamin","operatief":0},
+            {"naam":"G'sengte Sau","park":"Tripsdrill","fabrikant":"Gerstlauer","operatief":1},
+            {"naam":"Pulsar","park":"Walibi Belgium","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Stampedia","park":"PortAventura","fabrikant":"CCI","operatief":1},
+            {"naam":"Krake","park":"Heide Park","fabrikant":"B&M","operatief":1},
+            {"naam":"Tiki-Waka","park":"Walibi Belgium","fabrikant":"Gerstlauer","operatief":1},
+            {"naam":"Correcaminos Bip, Bip","park":"Parque Warner","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Tornado","park":"Parque de attractiones","fabrikant":"Intamin","operatief":1},
+            {"naam":"Robin Hood","park":"Walibi Holland","fabrikant":"Vekoma","operatief":0},
+            {"naam":"Falcon","park":"Duinrell","fabrikant":"Gerstlauer","operatief":1},
+            {"naam":"Typhoon","park":"Bobbejaanland","fabrikant":"Gerstlauer","operatief":1},
+            {"naam":"Euro Mir","park":"Europa-Park","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Speed of Sound","park":"Walibi Holland","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Diablo - Tren de la Mina","park":"PortAventura","fabrikant":"Arrow","operatief":1},
+            {"naam":"Crazy Bats (VR)","park":"Phantasialand","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Cobra","park":"Walibi Belgium","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Balagos (Tornado)","park":"Hellendoorn","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Thunder Loop","park":"Slagharen","fabrikant":"Schwarzkopf","operatief":0},
+            {"naam":"Bobbahn","park":"Heide Park","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Calamity Mine","park":"Walibi Belgium","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Poseidon","park":"Europa-Park","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Max & Moritz","park":"Efteling","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"TNT Tren de la Mina","park":"Parque de attractiones","fabrikant":"Gerstlauer","operatief":1},
+            {"naam":"Naga bay","park":"Bobbejaanland","fabrikant":"Mauer Rides","operatief":1},
+            {"naam":"Tomahawk","park":"PortAventura","fabrikant":"CCI","operatief":1},
+            {"naam":"Raik","park":"Phantasialand","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Volldampf","park":"Tripsdrill","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Boomerang","park":"Energylandia","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Light Explorers","park":"Energylandia","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Vogelrok","park":"Efteling","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Vampire","park":"Walibi Belgium","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Condor","park":"Walibi Holland","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Roller Coaster Mayan","park":"Energylandia","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Limit","park":"Heide Park","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Dream catcher","park":"Bobbejaanland","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Jimmy Neutron's Atomic Flyer","park":"Moviepark Germany","fabrikant":"Vekoma","operatief":1},
+            {"naam":"MP Xpress","park":"Moviepark Germany","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Python","park":"Efteling","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Big Loop","park":"Heide Park","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Booster Bike","park":"Toverland","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Rioolrat","park":"Hellendoorn","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Pegasus","park":"Efteling","fabrikant":"Intamin","operatief":0},
+            {"naam":"Coaster Express","park":"Parque Warner","fabrikant":"RCCA","operatief":1},
+            {"naam":"Psyché Underground","park":"Walibi Belgium","fabrikant":"Schwarzkopf","operatief":1},
+            {"naam":"Royal Scotsman","park":"Hansa Park","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Mammut","park":"Tripsdrill","fabrikant":"Gerstlauer","operatief":1},
+            {"naam":"Flying Dutchman Gold Mine","park":"Walibi Holland","fabrikant":"Vekoma","operatief":0},
+            {"naam":"Crazy Mine","park":"Hansa Park","fabrikant":"Mauer Rides","operatief":1},
+            {"naam":"Speedy bob","park":"Bobbejaanland","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Vertigo","park":"Parque de attractiones","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Ghost Chasers","park":"Moviepark Germany","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Matterhorn Blitz","park":"Europa-Park","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Atlantica SuperSplash","park":"Europa-Park","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Loup Garou","park":"Walibi Belgium","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Bandit","park":"Moviepark Germany","fabrikant":"RCCA","operatief":1},
+            {"naam":"Schweizer Bobbahn","park":"Europa-Park","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Schlange von Midgard","park":"Hansa Park","fabrikant":"Gerstlauer","operatief":1},
+            {"naam":"Mine Train","park":"Slagharen","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Frida","park":"Energylandia","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Tom y Jerry","park":"Parque Warner","fabrikant":"Zierer","operatief":1},
+            {"naam":"Pegasus","park":"Europa-Park","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Kikkerachtbaan","park":"Duinrell","fabrikant":"Zierer","operatief":1},
+            {"naam":"Rasender Tausendfüßler","park":"Tripsdrill","fabrikant":"Zierer","operatief":1},
+            {"naam":"Energus","park":"Energylandia","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Dragon Fly","park":"Duinrell","fabrikant":"Gerstlauer","operatief":1},
+            {"naam":"Jul's RollerSkates","park":"Juliana Toren","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Donderstenen","park":"Hellendoorn","fabrikant":"Zierer","operatief":1},
+            {"naam":"Oki doki","park":"Bobbejaanland","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Fun Pilot","park":"Walibi Belgium","fabrikant":"Zamperla","operatief":1},
+            {"naam":"Tami-Tami","park":"PortAventura","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Toos-Express","park":"Toverland","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Backyardigans: Misson to Mars","park":"Moviepark Germany","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Grottenblitz","park":"Heide Park","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Indy-Blitz","park":"Heide Park","fabrikant":"Zierer","operatief":1},
+            {"naam":"Draak","park":"Plopsaland de Panne","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Drako","park":"Walibi Holland","fabrikant":"Vekoma","operatief":1},
+            {"naam":"Kleine Zar","park":"Hansa Park","fabrikant":"Preston & Bareiri","operatief":1},
+            {"naam":"Bob express","park":"Bobbejaanland","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Ba-a-a-Express","park":"Europa-Park","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Junior Red Force","park":"Ferrari Land","fabrikant":"SBF Visa","operatief":1},
+            {"naam":"Achterbahn","park":"Wunderland Kalkar","fabrikant":"Zamperla","operatief":1},
+            {"naam":"Alpenexpress Enzian","park":"Europa-Park","fabrikant":"Mack Rides","operatief":1},
+            {"naam":"Volare","park":"Prater Park","fabrikant":"Zamperla","operatief":1},
+            {"naam":"Viking Roller Coaster","park":"Energylandia","fabrikant":"SBF Visa","operatief":1}
+        ];
+
+        // Global variables
+        let currentUser = null;
+        let coasters = [];
+        let coasterStats = {};
+        let totalBattlesCount = 0;
+        let currentBattle = null;
+        let currentSort = { column: 'elo', ascending: false };
+
+        // User management
+        function switchUser(user) {
+            currentUser = user;
+            
+            // Update UI
+            document.querySelectorAll('.user-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('btn-' + user).classList.add('active');
+            document.getElementById('currentUserBadge').textContent = `Ingelogd als: ${user === 'luca' ? 'Luca' : 'Wouter'}`;
+            
+            // Load user-specific data
+            if (user === 'luca') {
+                coasters = coastersDataLuca.filter(c => c.operatief === 1);
+            } else {
+                coasters = coastersDataWouter.filter(c => c.operatief === 1);
+            }
+            
+            // Load or initialize stats
+            loadUserData();
+            
+            // Refresh displays
+            displayBattle();
+            updateRanking();
+        }
+
+        function loadUserData() {
+            const statsKey = `coasterStats_${currentUser}`;
+            const battlesKey = `totalBattles_${currentUser}`;
+            
+            coasterStats = JSON.parse(localStorage.getItem(statsKey)) || initializeStats();
+            totalBattlesCount = parseInt(localStorage.getItem(battlesKey)) || 0;
+        }
+
+        function initializeStats() {
+            const stats = {};
+            coasters.forEach(coaster => {
+                stats[coaster.naam] = {
+                    name: coaster.naam,
+                    park: coaster.park,
+                    manufacturer: coaster.fabrikant,
+                    elo: 1500,
+                    battles: 0,
+                    wins: 0,
+                    losses: 0
+                };
+            });
+            return stats;
+        }
+
+        function saveData() {
+            if (!currentUser) return;
+            
+            const statsKey = `coasterStats_${currentUser}`;
+            const battlesKey = `totalBattles_${currentUser}`;
+            
+            localStorage.setItem(statsKey, JSON.stringify(coasterStats));
+            localStorage.setItem(battlesKey, totalBattlesCount.toString());
+        }
+
+        function getRandomCoasters() {
+            const shuffled = [...coasters].sort(() => 0.5 - Math.random());
+            return [shuffled[0], shuffled[1]];
+        }
+
+        function calculateElo(winnerElo, loserElo, K = 32) {
+            const expectedWinner = 1 / (1 + Math.pow(10, (loserElo - winnerElo) / 400));
+            const expectedLoser = 1 / (1 + Math.pow(10, (winnerElo - loserElo) / 400));
+            
+            const newWinnerElo = winnerElo + K * (1 - expectedWinner);
+            const newLoserElo = loserElo + K * (0 - expectedLoser);
+            
+            return { newWinnerElo, newLoserElo };
+        }
+
+        function displayBattle() {
+            if (!currentUser) {
+                document.getElementById('battleContainer').innerHTML = '<div class="no-battles">Selecteer eerst een gebruiker hierboven! 👆</div>';
+                return;
+            }
+            
+            currentBattle = getRandomCoasters();
+            const battleContainer = document.getElementById('battleContainer');
+            
+            battleContainer.innerHTML = `
+                <div class="coaster-card left-card" onclick="chooseWinner(0)">
+                    <div class="coaster-name">${currentBattle[0].naam}</div>
+                    <div class="coaster-info">
+                        <div class="coaster-info-row">
+                            <span class="info-label">🎢 Park:</span>
+                            <span class="info-value">${currentBattle[0].park}</span>
+                        </div>
+                        <div class="coaster-info-row">
+                            <span class="info-label">🏭 Fabrikant:</span>
+                            <span class="info-value">${currentBattle[0].fabrikant}</span>
+                        </div>
+                    </div>
+                    <button class="choose-btn">Kies Deze! 👆</button>
+                </div>
+                
+                <div class="vs-divider">VS</div>
+                
+                <div class="coaster-card right-card" onclick="chooseWinner(1)">
+                    <div class="coaster-name">${currentBattle[1].naam}</div>
+                    <div class="coaster-info">
+                        <div class="coaster-info-row">
+                            <span class="info-label">🎢 Park:</span>
+                            <span class="info-value">${currentBattle[1].park}</span>
+                        </div>
+                        <div class="coaster-info-row">
+                            <span class="info-label">🏭 Fabrikant:</span>
+                            <span class="info-value">${currentBattle[1].fabrikant}</span>
+                        </div>
+                    </div>
+                    <button class="choose-btn">Kies Deze! 👆</button>
+                </div>
+            `;
+        }
+
+        function chooseWinner(index) {
+            if (!currentUser) return;
+            
+            const winner = currentBattle[index];
+            const loser = currentBattle[1 - index];
+            
+            // Get current ELO ratings
+            const winnerStats = coasterStats[winner.naam];
+            const loserStats = coasterStats[loser.naam];
+            
+            // Calculate new ELO ratings
+            const { newWinnerElo, newLoserElo } = calculateElo(winnerStats.elo, loserStats.elo);
+            
+            // Update stats
+            winnerStats.elo = newWinnerElo;
+            winnerStats.battles++;
+            winnerStats.wins++;
+            
+            loserStats.elo = newLoserElo;
+            loserStats.battles++;
+            loserStats.losses++;
+            
+            totalBattlesCount++;
+            
+            // Save to localStorage
+            saveData();
+            
+            // Visual feedback
+            const cards = document.querySelectorAll('.coaster-card');
+            cards[index].classList.add('winner');
+            
+            // Load next battle after short delay
+            setTimeout(() => {
+                displayBattle();
+            }, 500);
+        }
+
+        // Keyboard controls
+        document.addEventListener('keydown', (event) => {
+            if (!currentUser) return;
+            
+            const battleTab = document.getElementById('battle-tab');
+            if (!battleTab.classList.contains('active')) return;
+            
+            if (event.key === 'ArrowLeft') {
+                event.preventDefault();
+                chooseWinner(0);
+            } else if (event.key === 'ArrowRight') {
+                event.preventDefault();
+                chooseWinner(1);
+            }
+        });
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            if (tabName === 'ranking') {
+                updateRanking();
+            }
+        }
+
+        function sortRanking(column) {
+            if (currentSort.column === column) {
+                currentSort.ascending = !currentSort.ascending;
+            } else {
+                currentSort.column = column;
+                currentSort.ascending = false;
+            }
+            updateRanking();
+        }
+
+        function updateRanking() {
+            if (!currentUser) {
+                document.getElementById('rankingBody').innerHTML = '<tr><td colspan="9" class="no-battles">Selecteer eerst een gebruiker! 🎢</td></tr>';
+                return;
+            }
+            
+            const statsArray = Object.values(coasterStats);
+            const totalCoasters = statsArray.length;
+            const totalBattles = totalBattlesCount;
+            const avgBattles = totalBattles > 0 ? (totalBattles * 2 / totalCoasters).toFixed(1) : 0;
+            
+            document.getElementById('totalBattles').textContent = totalBattles;
+            document.getElementById('totalCoasters').textContent = totalCoasters;
+            document.getElementById('avgBattlesPerCoaster').textContent = avgBattles;
+            
+            const sorted = [...statsArray].sort((a, b) => {
+                let aVal, bVal;
+                
+                switch(currentSort.column) {
+                    case 'name':
+                        aVal = a.name;
+                        bVal = b.name;
+                        break;
+                    case 'park':
+                        aVal = a.park;
+                        bVal = b.park;
+                        break;
+                    case 'manufacturer':
+                        aVal = a.manufacturer;
+                        bVal = b.manufacturer;
+                        break;
+                    case 'elo':
+                        aVal = a.elo;
+                        bVal = b.elo;
+                        break;
+                    case 'battles':
+                        aVal = a.battles;
+                        bVal = b.battles;
+                        break;
+                    case 'wins':
+                        aVal = a.wins;
+                        bVal = b.wins;
+                        break;
+                    case 'losses':
+                        aVal = a.losses;
+                        bVal = b.losses;
+                        break;
+                    case 'winrate':
+                        aVal = a.battles > 0 ? (a.wins / a.battles) : 0;
+                        bVal = b.battles > 0 ? (b.wins / b.battles) : 0;
+                        break;
+                    default:
+                        aVal = a.elo;
+                        bVal = b.elo;
+                }
+                
+                if (typeof aVal === 'string') {
+                    return currentSort.ascending ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+                } else {
+                    return currentSort.ascending ? aVal - bVal : bVal - aVal;
+                }
+            });
+            
+            document.querySelectorAll('.ranking-table th').forEach(th => {
+                const text = th.textContent.replace(' ⬆️', '').replace(' ⬇️', '');
+                th.textContent = text;
+            });
+            
+            const activeHeader = Array.from(document.querySelectorAll('.ranking-table th'))
+                .find(th => th.textContent.toLowerCase().includes(currentSort.column) || 
+                            (currentSort.column === 'elo' && th.textContent.includes('ELO')));
+            
+            if (activeHeader) {
+                const text = activeHeader.textContent.replace(' ⬆️', '').replace(' ⬇️', '');
+                activeHeader.textContent = text + (currentSort.ascending ? ' ⬆️' : ' ⬇️');
+            }
+            
+            const tbody = document.getElementById('rankingBody');
+            
+            if (totalBattles === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="no-battles">Start met battlen om je ranking te zien! 🎢</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = sorted.map((coaster, index) => {
+                const rank = index + 1;
+                const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '';
+                const winrate = coaster.battles > 0 ? ((coaster.wins / coaster.battles) * 100).toFixed(1) : '0.0';
+                
+                return `
+                    <tr>
+                        <td><span class="rank-medal">${medal}</span>${rank}</td>
+                        <td><strong>${coaster.name}</strong></td>
+                        <td>${coaster.park}</td>
+                        <td>${coaster.manufacturer}</td>
+                        <td><span class="elo-score">${Math.round(coaster.elo)}</span></td>
+                        <td>${coaster.battles}</td>
+                        <td>${coaster.wins}</td>
+                        <td>${coaster.losses}</td>
+                        <td>${winrate}%</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function filterRanking() {
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            const rows = document.querySelectorAll('#rankingBody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        }
+
+        function resetRankings() {
+            if (!currentUser) return;
+            
+            if (confirm(`Weet je zeker dat je alle data voor ${currentUser === 'luca' ? 'Luca' : 'Wouter'} wilt resetten? Dit kan niet ongedaan worden gemaakt!`)) {
+                if (confirm('Laatste waarschuwing! Alle battles en rankings worden gewist. Doorgaan?')) {
+                    coasterStats = initializeStats();
+                    totalBattlesCount = 0;
+                    saveData();
+                    displayBattle();
+                    updateRanking();
+                    alert('Alle data is gereset! 🔄');
+                }
+            }
+        }
+
+        // Initialize - check if there's a saved user preference
+        const savedUser = localStorage.getItem('lastUser');
+        if (savedUser && (savedUser === 'luca' || savedUser === 'wouter')) {
+            switchUser(savedUser);
+        }
+
+        // Save user preference when switching
+        const originalSwitchUser = switchUser;
+        switchUser = function(user) {
+            originalSwitchUser(user);
+            localStorage.setItem('lastUser', user);
+        };
+    </script>
+
+</body></html>
