@@ -32,6 +32,31 @@
             text-align: center;
         }
 
+        /* Header layout helpers */
+        .header-inner {
+            position: relative;
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: nowrap;
+        }
+
+        .header-left, .header-right {
+            position: absolute;
+            top: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-left { left: 16px; }
+        .header-right { right: 16px; }
+
+        .header-center { display: flex; flex-direction: column; align-items: center; }
+
         .header h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
@@ -41,6 +66,23 @@
             margin-top: 10px;
             font-size: 0.9em;
             opacity: 0.9;
+            text-align: center;
+        }
+        /* make the entire battle tab the positioning context so the hint sits at the bottom of the tab */
+        #battle-tab { position: relative; }
+        .keyboard-hint {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            margin: 0;
+            padding: 6px 10px;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            border-radius: 8px;
+            font-size: 0.9em;
+            pointer-events: none;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
         }
 
         .user-selector {
@@ -51,6 +93,86 @@
             padding: 15px;
             background: rgba(255,255,255,0.1);
             border-radius: 10px;
+        }
+
+        /* Hamburger user menu */
+        .hamburger-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            padding: 8px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 700;
+        }
+
+        .user-menu {
+            position: absolute;
+            right: 0;
+            top: 40px;
+            background: white;
+            color: #333;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            padding: 10px;
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 2000;
+            min-width: 160px;
+        }
+
+        .user-menu.open { display: flex; }
+
+        .user-menu .user-btn {
+            padding: 10px 12px;
+            border: none;
+            background: transparent;
+            color: #333;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .user-menu .user-btn:hover { background: #f1f1f1; }
+
+        .user-menu .user-btn.active { background: #4CA1AF; color: white; }
+
+        /* Responsive: stack badge and hamburger on narrow viewports */
+        @media (max-width: 600px) {
+            .header {
+                text-align: left;
+                padding-right: 16px;
+                padding-left: 16px;
+            }
+
+            .header-inner {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .header-center { align-items: flex-start; }
+            .header h1, .header p, .keyboard-hint { text-align: left; }
+
+            .current-user-badge, .hamburger-btn {
+                position: static;
+                margin: 6px 0;
+                left: auto;
+                top: auto;
+            }
+
+            .user-menu {
+                position: static;
+                box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+                margin-top: 6px;
+                right: auto;
+                top: auto;
+                min-width: 140px;
+            }
+            .keyboard-hint { display: none; }
         }
 
         .user-btn {
@@ -78,10 +200,10 @@
         .current-user-badge {
             display: inline-block;
             background: rgba(255,255,255,0.2);
-            padding: 5px 15px;
+            padding: 8px 14px;
             border-radius: 20px;
-            font-size: 0.9em;
-            margin-top: 10px;
+            font-size: 0.95em;
+            z-index: 2010;
         }
 
         .tabs {
@@ -115,6 +237,7 @@
         .tab-content {
             display: none;
             padding: 40px;
+            padding-top: 0px;
             min-height: 500px;
         }
 
@@ -367,9 +490,71 @@
             font-size: 1.2em;
         }
 
+        /* History styles */
+        .history-row {
+            padding: 8px 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .winner-pill {
+            display: inline-block;
+            background: #e6fbec;
+            color: #0b6f35;
+            padding: 6px 10px;
+            border-radius: 12px;
+            font-weight: 700;
+        }
+
+        .history-delete {
+            background: transparent;
+            border: none;
+            color: #888;
+            font-size: 1.05em;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+        }
+
+        .history-delete:hover {
+            color: #d00;
+            background: rgba(0,0,0,0.03);
+        }
+
+        .history-pair {
+            text-align: center;
+            flex: 1;
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%) translateY(6px);
+            background: rgba(0,0,0,0.85);
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 220ms ease, transform 220ms ease;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
         .search-box {
             padding: 12px 20px;
-            border: 2px solid #ddd;
+            border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 1em;
             width: 100%;
@@ -381,6 +566,72 @@
             outline: none;
             border-color: #4CA1AF;
         }
+
+        .pairing-help {
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+            max-width: 760px;
+            margin: 6px auto 14px auto;
+            line-height: 1.4;
+        }
+
+        /* Segmented pairing toggle */
+        .pair-toggle { background: #fff; }
+        .pair-toggle .pair-option {
+            padding: 8px 14px;
+            border: none;
+            background: white;
+            cursor: pointer;
+            font-weight: 600;
+            color: #333;
+            position: relative;
+            min-width: 110px;
+        }
+        .pair-toggle .pair-option + .pair-option { border-left: 1px solid #eee; }
+        .pair-toggle .pair-option.active {
+            background: linear-gradient(135deg, #4CA1AF 0%, #2C3E50 100%);
+            color: #fff;
+        }
+        .pair-option .help-pop {
+            display: none;
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            background: rgba(0,0,0,0.85);
+            color: #fff;
+            padding: 8px 10px;
+            border-radius: 8px;
+            font-size: 0.85em;
+            z-index: 999;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+        }
+        .pair-option:hover .help-pop { display: block; }
+
+        /* Floating tooltip that follows cursor (used for pair-option help) */
+        .floating-help {
+            position: fixed;
+            pointer-events: none;
+            background: rgba(0,0,0,0.80);
+            color: #fff;
+            padding: 8px 10px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            opacity: 0;
+            transform: translate(-50%, 8px);
+            transition: opacity 180ms ease, transform 180ms ease;
+            z-index: 10000;
+            white-space: nowrap;
+        }
+        .floating-help.show { opacity: 1; transform: translate(-50%, 0); }
+
+        .pairing-controls-wrapper { display:flex;flex-direction:column;align-items:center; }
+        #pairingControls { max-height: 240px; opacity: 1; }
+        #pairingControls.collapsed { max-height: 0; opacity: 0; padding: 0; margin: 0; pointer-events: none; }
+        .pairing-toggle-btn { transition: transform 180ms ease, background 120ms ease; }
+        .pairing-toggle-btn.collapsed { transform: rotate(180deg); }
 
         .filter-container {
             margin-bottom: 20px;
@@ -413,25 +664,74 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎢 Coaster Tinder 🎢</h1>
-            <p>Ontdek jouw favoriete achtbaan!</p>
-            <div class="user-selector">
-                <button class="user-btn" onclick="switchUser('luca')" id="btn-luca">👤 Luca</button>
-                <button class="user-btn" onclick="switchUser('wouter')" id="btn-wouter">👤 Wouter</button>
+            <div class="header-inner">
+                <div class="header-left">
+                    <div class="current-user-badge" id="currentUserBadge">Selecteer een gebruiker</div>
+                </div>
+
+                <div class="header-center">
+                    <h1>Coaster Ranker</h1>
+                    <p>Ontdek jouw favoriete achtbaan</p>
+                </div>
+
+                <div class="header-right">
+                    <button id="userMenuToggle" class="hamburger-btn" aria-haspopup="true" aria-expanded="false" title="Gebruiker kiezen" onclick="toggleUserMenu()">☰</button>
+                    <div id="userMenu" class="user-menu" aria-hidden="true">
+                        <button class="user-btn" onclick="switchUser('luca')" id="btn-luca">👤 Luca</button>
+                        <button class="user-btn" onclick="switchUser('wouter')" id="btn-wouter">👤 Wouter</button>
+                    </div>
+                </div>
             </div>
-            <div class="current-user-badge" id="currentUserBadge">Selecteer een gebruiker</div>
-            <p class="keyboard-hint">⌨️ Tip: Gebruik de pijltjestoetsen! ← Links | Rechts →</p>
         </div>
 
         <div class="tabs">
             <button class="tab active" onclick="switchTab('battle')">⚔️ Battle</button>
             <button class="tab" onclick="switchTab('ranking')">🏆 Ranking</button>
+            <button class="tab" onclick="switchTab('history')">📜 History</button>
         </div>
 
+        <div class="pairing-controls-wrapper" style="margin:12px 0;">
+            <div style="display:flex;justify-content:center;align-items:center;">
+                <div style="font-size:0.95em;color:#444;display:flex;align-items:center;gap:8px;"></div>
+                <button id="pairingControlsToggle" class="pairing-toggle-btn" onclick="togglePairingControls()" aria-expanded="true" title="Verberg instellingen" style="margin-left:8px;padding:6px 8px;border-radius:8px;border:none;background:#fff;cursor:pointer;font-weight:700;">▾</button>
+            </div>
+
+            <div id="pairingControls" class="pairing-controls" style="display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:8px;transition:max-height 260ms ease,opacity 180ms ease;overflow:hidden;">
+                <div class="pair-toggle" style="display:flex;border:1px solid #ddd;border-radius:10px;overflow:hidden;">
+                    <button class="pair-option" data-value="hybrid" data-help="kiest eerst een onderbemonsterde achtbaan, daarna een tegenstander met vergelijkbare ELO (balanceert verkenning en verfijning)" onclick="setPairingStrategy('hybrid')">
+                        Hybrid
+                    </button>
+                    <button class="pair-option" data-value="exploration" data-help="beide keuzes geven prioriteit aan onderbemonsterde achtbanen (sneller coverage)" onclick="setPairingStrategy('exploration')">
+                        Exploration
+                    </button>
+                    <button class="pair-option" data-value="uniform" data-help="volledig willekeurig (geen bias)" onclick="setPairingStrategy('uniform')">
+                        Uniform
+                    </button>
+                </div>
+
+                <div style="display:flex;align-items:center;gap:8px;font-size:0.95em;color:#444;">
+                    ELO-proximity:
+                    <input id="eloProximityRange" type="range" min="0" max="4" step="0.1" value="1" oninput="setEloProximityPower(this.value)" style="width:180px;">
+                    <span id="eloProximityValue" style="min-width:36px;text-align:center;font-weight:700;color:#2c3e50;">1.0</span>
+                </div>
+            </div>
+        </div>
         <div id="battle-tab" class="tab-content active">
             <div class="vs-divider">VS</div>
-            <div class="battle-container" id="battleContainer">
-                <div class="no-battles">Selecteer eerst een gebruiker hierboven! 👆</div>
+            <div class="battle-area">
+                <div class="battle-container" id="battleContainer">
+                    <div class="no-battles">Selecteer eerst een gebruiker hierboven! 👆</div>
+                </div>
+                <p class="keyboard-hint">⌨️ Tip: Gebruik de pijltjestoetsen! ← Links | Rechts →</p>
+            </div>
+        </div>
+        
+        <div id="history-tab" class="tab-content">
+            <div style="display:flex;justify-content:center;align-items:center;margin-bottom:16px; gap:10px;">
+                <input id="historySearch" type="text" class="search-box" placeholder="🔍 Zoek matchup..." oninput="displayHistory()" style="max-width:360px;" />
+            </div>
+            <div id="historyContainer" style="overflow:auto; max-height:420px;">
+                <div class="no-battles">Nog geen battles — start met kiezen om history op te bouwen.</div>
             </div>
         </div>
 
@@ -767,6 +1067,22 @@
         let totalBattlesCount = 0;
         let currentBattle = null;
         let currentSort = { column: 'elo', ascending: false };
+        // History: stores past battles for current user
+        let coasterHistory = [];
+        // Stack for undoing deletions (LIFO)
+        let deletedHistoryStack = [];
+        const MAX_UNDO_STACK = 50;
+        // Exploration boost: favor coasters with few battles
+        const EXPLORATION_POWER = 1; // higher => stronger preference for low-battles
+        // ELO-proximity: prefer opponents whose ELO is similar (more informative matches)
+        let ELO_PROXIMITY_POWER = 1; // higher => stronger preference for similar ELO
+        const ELO_DIFF_SCALE = 400; // scale (in ELO points) used to normalize differences
+        // Pairing strategy: 'hybrid' recommended — picks one under-sampled coaster
+        // then picks a second that is ELO-similar while still favoring under-sampled ones.
+        // Other options: 'exploration' (both chosen by exploration weight), 'uniform'.
+        let PAIRING_STRATEGY = 'hybrid';
+        let pairingControlsHidden = false;
+        const AVOID_RECENT = 100; // try to avoid pairs that occurred in last N battles
 
         // User management
         function switchUser(user) {
@@ -790,14 +1106,20 @@
             // Refresh displays
             displayBattle();
             updateRanking();
+            // close menu after selection (if open)
+            try { closeUserMenu(); } catch (e) {}
         }
 
         function loadUserData() {
             const statsKey = `coasterStats_${currentUser}`;
             const battlesKey = `totalBattles_${currentUser}`;
-            
+            const historyKey = `coasterHistory_${currentUser}`;
+
             coasterStats = JSON.parse(localStorage.getItem(statsKey)) || initializeStats();
             totalBattlesCount = parseInt(localStorage.getItem(battlesKey)) || 0;
+            coasterHistory = JSON.parse(localStorage.getItem(historyKey)) || [];
+            // load pairing settings for this user (if any)
+            loadPairingSettings();
         }
 
         function initializeStats() {
@@ -818,27 +1140,371 @@
 
         function saveData() {
             if (!currentUser) return;
-            
             const statsKey = `coasterStats_${currentUser}`;
             const battlesKey = `totalBattles_${currentUser}`;
-            
+            const historyKey = `coasterHistory_${currentUser}`;
+
             localStorage.setItem(statsKey, JSON.stringify(coasterStats));
             localStorage.setItem(battlesKey, totalBattlesCount.toString());
+            localStorage.setItem(historyKey, JSON.stringify(coasterHistory));
+            // persist pairing settings per-user
+            try {
+                const settingsKey = `pairingSettings_${currentUser}`;
+                const settings = { pairingStrategy: PAIRING_STRATEGY, eloProximityPower: ELO_PROXIMITY_POWER, pairingControlsHidden: pairingControlsHidden };
+                localStorage.setItem(settingsKey, JSON.stringify(settings));
+            } catch (e) {
+                // ignore
+            }
         }
 
+        // Persist/load pairing settings per user
+        function loadPairingSettings() {
+            if (!currentUser) return;
+            try {
+                const settingsKey = `pairingSettings_${currentUser}`;
+                const raw = localStorage.getItem(settingsKey);
+                if (!raw) return applySettingsToUI();
+                const s = JSON.parse(raw);
+                if (s && typeof s.pairingStrategy === 'string') PAIRING_STRATEGY = s.pairingStrategy;
+                if (s && typeof s.eloProximityPower === 'number') ELO_PROXIMITY_POWER = s.eloProximityPower;
+                if (s && typeof s.pairingControlsHidden === 'boolean') pairingControlsHidden = s.pairingControlsHidden;
+            } catch (e) {
+                // ignore
+            }
+            applySettingsToUI();
+        }
+
+        function setPairingStrategy(val) {
+            if (!val) return;
+            PAIRING_STRATEGY = val;
+            saveData();
+            applySettingsToUI();
+        }
+
+        function setEloProximityPower(val) {
+            const num = Number(val);
+            if (isNaN(num)) return;
+            ELO_PROXIMITY_POWER = num;
+            const el = document.getElementById('eloProximityValue');
+            if (el) el.textContent = num.toFixed(1);
+            saveData();
+        }
+
+        function applySettingsToUI() {
+            // update segmented toggle buttons
+            const opts = document.querySelectorAll('.pair-option');
+            opts.forEach(btn => {
+                try {
+                    const v = btn.getAttribute('data-value');
+                    if (v === PAIRING_STRATEGY) btn.classList.add('active'); else btn.classList.remove('active');
+                } catch (e) {}
+            });
+            // update range and label
+            const range = document.getElementById('eloProximityRange');
+            const val = document.getElementById('eloProximityValue');
+            if (range) range.value = ELO_PROXIMITY_POWER;
+            if (val) val.textContent = (Number(ELO_PROXIMITY_POWER) || 0).toFixed(1);
+            // apply pairing controls hidden state
+            const pairingDiv = document.getElementById('pairingControls');
+            const toggleBtn = document.getElementById('pairingControlsToggle');
+            if (pairingDiv) {
+                if (pairingControlsHidden) pairingDiv.classList.add('collapsed'); else pairingDiv.classList.remove('collapsed');
+            }
+            if (toggleBtn) {
+                if (pairingControlsHidden) {
+                    toggleBtn.classList.add('collapsed');
+                    toggleBtn.setAttribute('aria-expanded', 'false');
+                    toggleBtn.title = 'Toon instellingen';
+                } else {
+                    toggleBtn.classList.remove('collapsed');
+                    toggleBtn.setAttribute('aria-expanded', 'true');
+                    toggleBtn.title = 'Verberg instellingen';
+                }
+            }
+        }
+
+        function togglePairingControls() {
+            pairingControlsHidden = !pairingControlsHidden;
+            applySettingsToUI();
+            saveData();
+        }
+
+        // User menu (hamburger) toggle and outside-click handling
+        function toggleUserMenu() {
+            const menu = document.getElementById('userMenu');
+            const btn = document.getElementById('userMenuToggle');
+            if (!menu || !btn) return;
+            const open = menu.classList.toggle('open');
+            menu.setAttribute('aria-hidden', (!open).toString());
+            btn.setAttribute('aria-expanded', open.toString());
+            if (open) {
+                // attach a one-time outside click listener
+                setTimeout(() => {
+                    document.addEventListener('click', outsideClickHandler);
+                }, 0);
+            } else {
+                document.removeEventListener('click', outsideClickHandler);
+            }
+        }
+
+        function closeUserMenu() {
+            const menu = document.getElementById('userMenu');
+            const btn = document.getElementById('userMenuToggle');
+            if (!menu || !btn) return;
+            menu.classList.remove('open');
+            menu.setAttribute('aria-hidden', 'true');
+            btn.setAttribute('aria-expanded', 'false');
+            document.removeEventListener('click', outsideClickHandler);
+        }
+
+        function outsideClickHandler(ev) {
+            const menu = document.getElementById('userMenu');
+            const btn = document.getElementById('userMenuToggle');
+            if (!menu || !btn) return;
+            if (!menu.contains(ev.target) && ev.target !== btn) {
+                closeUserMenu();
+            }
+        }
+
+        // close on Escape
+        document.addEventListener('keydown', (ev) => {
+            if (ev.key === 'Escape') closeUserMenu();
+        });
+
+        // Floating help tooltip logic (delayed show, follows cursor)
+        (function setupFloatingHelp(){
+            const tooltip = document.createElement('div');
+            tooltip.className = 'floating-help';
+            document.body.appendChild(tooltip);
+
+            let showTimer = null;
+            let visible = false;
+
+            function show(text, x, y) {
+                tooltip.textContent = text;
+                tooltip.style.left = x + 'px';
+                tooltip.style.top = (y + 18) + 'px';
+                tooltip.classList.add('show');
+                visible = true;
+            }
+
+            function move(x, y) {
+                tooltip.style.left = x + 'px';
+                tooltip.style.top = (y + 18) + 'px';
+            }
+
+            function hide() {
+                tooltip.classList.remove('show');
+                visible = false;
+                clearTimeout(showTimer);
+                showTimer = null;
+            }
+
+            // attach handlers to pair-option buttons
+            const buttons = document.querySelectorAll('.pair-option');
+            buttons.forEach(btn => {
+                let localTimer = null;
+                const help = btn.getAttribute('data-help') || '';
+
+                const onEnter = (ev) => {
+                    // start delayed show (1s)
+                    localTimer = setTimeout(() => {
+                        show(help, ev.clientX, ev.clientY);
+                    }, 1000);
+                    btn._localTimer = localTimer;
+                };
+
+                const onMove = (ev) => {
+                    if (visible) move(ev.clientX, ev.clientY);
+                };
+
+                const onLeave = () => {
+                    if (btn._localTimer) { clearTimeout(btn._localTimer); btn._localTimer = null; }
+                    hide();
+                };
+
+                btn.addEventListener('mouseenter', onEnter);
+                btn.addEventListener('mousemove', onMove);
+                btn.addEventListener('mouseleave', onLeave);
+
+                // also hide on click
+                btn.addEventListener('click', () => { if (btn._localTimer) { clearTimeout(btn._localTimer); btn._localTimer = null; } hide(); });
+            });
+
+            // hide tooltip on scroll or resize
+            window.addEventListener('scroll', hide, { passive: true });
+            window.addEventListener('resize', hide);
+        })();
+
+        // utility to make an unordered pair key (same for [A,B] and [B,A])
+        function pairKey(nameA, nameB) {
+            return [nameA, nameB].sort().join('|||');
+        }
+
+        // helper: record a battle into history
+        function recordBattle(a, b, winnerName, loserName) {
+            const entry = {
+                pairKey: pairKey(a.naam, b.naam),
+                a: a.naam,
+                b: b.naam,
+                winner: winnerName,
+                loser: loserName,
+                timestamp: new Date().toISOString(),
+                seed: (typeof seedNumber !== 'undefined') ? seedNumber : null
+            };
+            coasterHistory.push(entry);
+
+            // keep history bounded if you want (optional)
+            const MAX_HISTORY_KEEP = 10000;
+            if (coasterHistory.length > MAX_HISTORY_KEEP) coasterHistory.splice(0, coasterHistory.length - MAX_HISTORY_KEEP);
+
+            saveData();
+        }
+
+        // Attempt to pick a pair that hasn't occurred recently.
+        // Strategy:
+        //  - Use Math.random() (or seeded RNG if available) to sample pairs
+        //  - Try up to `attempts` times to get a pair whose pairKey is not found in the last `avoid` entries.
+        //  - If impossible, fall back to uniform random pair.
+                function getPairAvoidingDuplicates({ attempts = 200, avoid = AVOID_RECENT } = {}) {
+                    const length = coasters.length;
+                    if (length < 2) return [];
+
+                    const randomFn = (typeof rng === 'function') ? rng : Math.random;
+
+                    // set of recent pairKeys to avoid
+                    const recent = new Set();
+                    const startIndex = Math.max(0, coasterHistory.length - avoid);
+                    for (let i = startIndex; i < coasterHistory.length; i++) {
+                        recent.add(coasterHistory[i].pairKey);
+                    }
+
+                    // build base weights that give higher probability to coasters with fewer battles
+                    const weights = new Array(length);
+                    for (let i = 0; i < length; i++) {
+                        try {
+                            const name = coasters[i].naam;
+                            const stats = coasterStats && coasterStats[name] ? coasterStats[name] : null;
+                            const battles = stats && typeof stats.battles === 'number' ? stats.battles : 0;
+                            // base exploration weight: inverse of (1 + battles) ^ EXPLORATION_POWER
+                            const w = 1 / Math.pow(1 + Math.max(0, battles), EXPLORATION_POWER);
+                            weights[i] = w;
+                        } catch (e) {
+                            weights[i] = 1;
+                        }
+                    }
+
+                    // helper: sample an index from a weight array
+                    const sampleIndexFromWeights = (arr, rnd) => {
+                        const tot = arr.reduce((s, v) => s + (isFinite(v) && v > 0 ? v : 0), 0);
+                        if (!tot || !isFinite(tot) || tot <= 0) return Math.floor((rnd()) * length);
+                        let r = rnd() * tot;
+                        for (let k = 0; k < arr.length; k++) {
+                            const val = isFinite(arr[k]) && arr[k] > 0 ? arr[k] : 0;
+                            r -= val;
+                            if (r <= 0) return k;
+                        }
+                        return arr.length - 1;
+                    };
+
+                    // strategy implementations
+                    if (PAIRING_STRATEGY === 'uniform') {
+                        // simple uniform sampling attempts avoiding recent
+                        for (let t = 0; t < attempts; t++) {
+                            const i = Math.floor(randomFn() * length);
+                            let j = Math.floor(randomFn() * length);
+                            if (length > 1) {
+                                let guard = 0;
+                                while (j === i && guard++ < 8) j = Math.floor(randomFn() * length);
+                                if (j === i) j = (i + 1) % length;
+                            }
+                            const a = coasters[i], b = coasters[j];
+                            const key = pairKey(a.naam, b.naam);
+                            if (!recent.has(key)) return [a, b];
+                        }
+                    } else if (PAIRING_STRATEGY === 'exploration') {
+                        // both selected from exploration-weighted distribution
+                        const indexFromExploration = () => sampleIndexFromWeights(weights, randomFn);
+                        for (let t = 0; t < attempts; t++) {
+                            const i = indexFromExploration();
+                            let j = indexFromExploration();
+                            if (length > 1) {
+                                let guard = 0;
+                                while (j === i && guard++ < 8) j = indexFromExploration();
+                                if (j === i) j = (i + 1) % length;
+                            }
+                            const a = coasters[i], b = coasters[j];
+                            const key = pairKey(a.naam, b.naam);
+                            if (!recent.has(key)) return [a, b];
+                        }
+                    }
+
+                    // default/hybrid: pick one under-sampled coaster first, then a second biased by ELO-proximity
+                    // (still favors under-sampled ones via base weights)
+                    const indexFromExploration = () => sampleIndexFromWeights(weights, randomFn);
+                    for (let t = 0; t < attempts; t++) {
+                        const i = indexFromExploration();
+
+                        const eloI = (coasterStats && coasterStats[coasters[i].naam] && typeof coasterStats[coasters[i].naam].elo === 'number') ? coasterStats[coasters[i].naam].elo : 1500;
+                        const condWeights = new Array(length);
+                        for (let k = 0; k < length; k++) {
+                            if (k === i) { condWeights[k] = 0; continue; }
+                            const nameK = coasters[k].naam;
+                            const eloK = (coasterStats && coasterStats[nameK] && typeof coasterStats[nameK].elo === 'number') ? coasterStats[nameK].elo : 1500;
+                            const diff = Math.abs(eloI - eloK) / ELO_DIFF_SCALE; // normalized diff
+                            const proximityFactor = 1 / Math.pow(1 + diff, ELO_PROXIMITY_POWER);
+                            const base = isFinite(weights[k]) && weights[k] > 0 ? weights[k] : 1;
+                            condWeights[k] = base * proximityFactor;
+                        }
+
+                        let j = sampleIndexFromWeights(condWeights, randomFn);
+                        if (j === i) {
+                            let guard = 0;
+                            while (j === i && guard++ < 8) j = sampleIndexFromWeights(condWeights, randomFn);
+                            if (j === i) j = (i + 1) % length;
+                        }
+
+                        const a = coasters[i], b = coasters[j];
+                        const key = pairKey(a.naam, b.naam);
+                        if (!recent.has(key)) return [a, b];
+                    }
+
+                    // fallback scanning approach: try to find any unseen pair deterministically
+                    const seenPairs = new Set(recent);
+                    for (let i = 0; i < length; i++) {
+                        for (let j = i + 1; j < length; j++) {
+                            const a = coasters[i], b = coasters[j];
+                            const key = pairKey(a.naam, b.naam);
+                            if (!seenPairs.has(key)) {
+                                if (randomFn() < 0.5) return [a, b]; else return [b, a];
+                            }
+                        }
+                    }
+
+                    // last resort: pick two via exploration+proximity weighting
+                    const idx1 = indexFromExploration();
+                    const elo1 = (coasterStats && coasterStats[coasters[idx1].naam] && typeof coasterStats[coasters[idx1].naam].elo === 'number') ? coasterStats[coasters[idx1].naam].elo : 1500;
+                    const condWeightsFinal = new Array(length);
+                    for (let k = 0; k < length; k++) {
+                        if (k === idx1) { condWeightsFinal[k] = 0; continue; }
+                        const eloK = (coasterStats && coasterStats[coasters[k].naam] && typeof coasterStats[coasters[k].naam].elo === 'number') ? coasterStats[coasters[k].naam].elo : 1500;
+                        const diff = Math.abs(elo1 - eloK) / ELO_DIFF_SCALE;
+                        const proximityFactor = 1 / Math.pow(1 + diff, ELO_PROXIMITY_POWER);
+                        const base = isFinite(weights[k]) && weights[k] > 0 ? weights[k] : 1;
+                        condWeightsFinal[k] = base * proximityFactor;
+                    }
+                    let idx2 = sampleIndexFromWeights(condWeightsFinal, randomFn);
+                    if (idx2 === idx1) {
+                        let guard = 0;
+                        while (idx2 === idx1 && guard++ < 8) idx2 = sampleIndexFromWeights(condWeightsFinal, randomFn);
+                        if (idx2 === idx1) idx2 = (idx1 + 1) % length;
+                    }
+                    return [coasters[idx1], coasters[idx2]];
+                }
+
+        // Replace getRandomCoasters() with duplicate-avoiding wrapper
         function getRandomCoasters() {
-        const length = coasters.length;
-
-        // Get first random index
-        const index1 = Math.floor(Math.random() * length);
-
-        // Get second random index, ensuring it's different
-        let index2;
-        do {
-            index2 = Math.floor(Math.random() * length);
-        } while (index2 === index1);
-
-        return [coasters[index1], coasters[index2]];
+            return getPairAvoidingDuplicates();
         }
 
         function calculateElo(winnerElo, loserElo, K = 32) {
@@ -915,7 +1581,10 @@
             
             totalBattlesCount++;
             
-            // Save to localStorage
+            // record to history before saving
+            recordBattle(winner, loser, winner.naam, loser.naam);
+
+            // Save to localStorage (now also saves history)
             saveData();
             
             // Visual feedback
@@ -944,11 +1613,50 @@
             }
         });
 
+        // Global undo for history deletes: Cmd+Z / Ctrl+Z (but not when typing in an input)
+        function undoLastDelete() {
+            if (!deletedHistoryStack || deletedHistoryStack.length === 0) return false;
+            const item = deletedHistoryStack.pop();
+            if (!item || !item.entry) return false;
+
+            // Re-insert at original index where possible, otherwise append
+            const insertIndex = (typeof item.index === 'number' && item.index >= 0 && item.index <= coasterHistory.length) ? item.index : coasterHistory.length;
+            coasterHistory.splice(insertIndex, 0, item.entry);
+            saveData();
+            displayHistory();
+            // Show a small toast confirming undo (include restored pair)
+            try {
+                const a = item.entry && item.entry.a ? item.entry.a : '';
+                const b = item.entry && item.entry.b ? item.entry.b : '';
+                showToast(`Hersteld: ${a} ↔ ${b}`);
+            } catch (e) {
+                showToast('Hersteld: matchup teruggezet');
+            }
+            return true;
+        }
+
+        document.addEventListener('keydown', (ev) => {
+            // Ignore undo while focused on text inputs or contenteditable areas
+            const active = document.activeElement;
+            if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.isContentEditable)) return;
+
+            const isUndo = (ev.key && ev.key.toLowerCase() === 'z') && (ev.metaKey || ev.ctrlKey);
+            if (!isUndo) return;
+
+            // Only act when there's a history tab or current user
+            if (!currentUser) return;
+
+            const handled = undoLastDelete();
+            if (handled) {
+                ev.preventDefault();
+            }
+        });
+
         function switchTab(tabName) {
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.classList.remove('active');
             });
-            event.target.classList.add('active');
+            try { event.target.classList.add('active'); } catch (e) {}
             
             document.querySelectorAll('.tab-content').forEach(content => {
                 content.classList.remove('active');
@@ -957,7 +1665,128 @@
             
             if (tabName === 'ranking') {
                 updateRanking();
+            } else if (tabName === 'history') {
+                displayHistory();
             }
+        }
+
+        // Render the history in the history tab
+        function displayHistory() {
+            const container = document.getElementById('historyContainer');
+            if (!container) return;
+            if (!coasterHistory || coasterHistory.length === 0) {
+                container.innerHTML = '<div class="no-battles">Nog geen battles — start met kiezen om history op te bouwen.</div>';
+                return;
+            }
+
+            const query = document.getElementById('historySearch') ? document.getElementById('historySearch').value.trim().toLowerCase() : '';
+
+            // Render only pair, highlight winner with a green pill and add a subtle delete button
+            const rows = coasterHistory.slice().reverse().map((entry, idx) => {
+                const originalIndex = coasterHistory.length - 1 - idx;
+                const a = entry.a;
+                const b = entry.b;
+                const winner = entry.winner;
+
+                const pairText = `${a} ↔ ${b}`;
+                if (query && !pairText.toLowerCase().includes(query) && !a.toLowerCase().includes(query) && !b.toLowerCase().includes(query)) {
+                    return '';
+                }
+
+                const aHtml = (winner === a) ? `<span class="winner-pill">${escapeHtml(a)}</span>` : escapeHtml(a);
+                const bHtml = (winner === b) ? `<span class="winner-pill">${escapeHtml(b)}</span>` : escapeHtml(b);
+
+                return `
+                    <div class="history-row">
+                        <div class="history-pair"><strong>${aHtml} &nbsp;↔&nbsp; ${bHtml}</strong></div>
+                        <div style="flex:0 0 auto;"><button class="history-delete" title="Verwijder deze matchup" onclick="deleteHistoryEntry(${originalIndex})">✖</button></div>
+                    </div>
+                `;
+            }).join('');
+
+            // If filtering removed all rows, show empty state
+            if (!rows || rows.trim() === '') {
+                container.innerHTML = '<div class="no-battles">Geen matchups gevonden voor deze zoekopdracht.</div>';
+            } else {
+                container.innerHTML = rows;
+            }
+        }
+
+        // delete a single history entry by its index in coasterHistory
+        function deleteHistoryEntry(index) {
+            if (typeof index !== 'number' || index < 0 || index >= coasterHistory.length) return;
+
+            const removed = coasterHistory.splice(index, 1)[0];
+
+            // push onto undo stack
+            try {
+                deletedHistoryStack.push({ entry: removed, index });
+                if (deletedHistoryStack.length > MAX_UNDO_STACK) deletedHistoryStack.shift();
+            } catch (e) {
+                // fallback: if something goes wrong with stack, ignore
+            }
+
+            saveData();
+            displayHistory();
+            // show toast confirming deletion
+            try {
+                showToast(`Verwijderd: ${removed.a} ↔ ${removed.b}`);
+            } catch (e) {}
+        }
+
+        // small helper to escape HTML in names
+        function escapeHtml(str) {
+            return String(str).replace(/[&<>"']/g, function (s) {
+                return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"})[s];
+            });
+        }
+
+        // Toast helper: show a small non-blocking message at bottom-center
+        function showToast(message, duration = 2400) {
+            try {
+                const existing = document.querySelector('.toast');
+                if (existing) {
+                    existing.remove();
+                }
+                const t = document.createElement('div');
+                t.className = 'toast';
+                t.textContent = message;
+                document.body.appendChild(t);
+                // Force layout then add class to trigger transition
+                void t.offsetWidth;
+                t.classList.add('show');
+                setTimeout(() => {
+                    t.classList.remove('show');
+                    setTimeout(() => t.remove(), 300);
+                }, duration);
+            } catch (e) {
+                // ignore failures silently
+            }
+        }
+
+        // clear history for user
+        function clearHistory() {
+            if (!currentUser) return;
+            coasterHistory = [];
+            saveData();
+            displayHistory();
+        }
+
+        // export history JSON
+        function exportHistory() {
+            if (!coasterHistory || coasterHistory.length === 0) {
+                alert('Geen history om te exporteren.');
+                return;
+            }
+            const blob = new Blob([JSON.stringify(coasterHistory, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `coaster_history_${currentUser || 'anonymous'}.json`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
         }
 
         function sortRanking(column) {
