@@ -76,13 +76,41 @@
             left: 50%;
             transform: translateX(-50%);
             margin: 0;
-            padding: 6px 10px;
+            padding: 6px 30px 6px 10px;
             background: rgba(255,255,255,0.9);
             color: #333;
             border-radius: 8px;
             font-size: 0.9em;
-            pointer-events: none;
+            pointer-events: auto;
             box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .keyboard-hint.hidden {
+            display: none;
+        }
+
+        .keyboard-hint-close {
+            position: absolute;
+            right: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: #666;
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 4px;
+            line-height: 1;
+            transition: all 0.2s;
+        }
+
+        .keyboard-hint-close:hover {
+            background: rgba(0,0,0,0.1);
+            color: #333;
         }
 
         .user-selector {
@@ -279,16 +307,22 @@
         }
 
         .coaster-card.winner {
-            animation: winShine 1.5s ease-out;
-            transform: scale(1.08);
+            animation: winShine 1.5s ease-out, winBounce 1.5s ease-out;
             box-shadow: 0 20px 40px rgba(16, 185, 129, 0.4);
-            transition: transform 0.5s ease-out;
         }
 
         .coaster-card.loser {
             transform: scale(0.92);
             opacity: 0.7;
-            transition: all 0.5s ease;
+            transition: all 0.4s ease;
+            animation: loserRecover 0.3s ease 1.3s forwards;
+        }
+
+        @keyframes loserRecover {
+            to {
+            transform: scale(1);
+            opacity: 1;
+            }
         }
 
         @keyframes winShine {
@@ -296,16 +330,40 @@
                 box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             }
             20% {
-                box-shadow: 0 0 30px 10px rgba(255, 215, 0, 0.8),
+                box-shadow: 0 0 30px 10px rgba(212, 255, 132, 0.8),
                             0 0 50px 20px rgba(255, 215, 0, 0.4),
                             0 20px 40px rgba(16, 185, 129, 0.4);
             }
             40% {
-                box-shadow: 0 0 20px 5px rgba(255, 215, 0, 0.6),
+                box-shadow: 0 0 20px 5px rgba(162, 255, 0, 0.6),
                             0 20px 40px rgba(16, 185, 129, 0.4);
             }
             100% {
                 box-shadow: 0 20px 40px rgba(16, 185, 129, 0.4);
+            }
+        }
+
+        @keyframes winBounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            10% {
+                transform: translateY(-15px);
+            }
+            20% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-10px);
+            }
+            40% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+            60% {
+                transform: translateY(0);
             }
         }
 
@@ -522,21 +580,47 @@
             font-size: 0.9em;
         }
 
+        .reset-panel {
+            margin-top: 24px;
+            padding: 18px 20px;
+            background: #f7fafc;
+            border: 1px solid #e3e8ee;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+            flex-wrap: wrap;
+        }
+
+        .reset-panel .reset-copy {
+            color: #445;
+            font-weight: 600;
+            font-size: 0.98em;
+        }
+
         .reset-btn {
-            background: #dc3545;
+            background: linear-gradient(135deg, #ff6b6b 0%, #f03e3e 100%);
             color: white;
             border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
+            padding: 12px 20px;
+            border-radius: 10px;
             font-size: 1em;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 10px 25px rgba(240, 62, 62, 0.25);
         }
 
         .reset-btn:hover {
-            background: #c82333;
-            transform: scale(1.05);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(240, 62, 62, 0.32);
+        }
+
+        .reset-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 6px 14px rgba(240, 62, 62, 0.2);
         }
 
         .ranking-table {
@@ -647,6 +731,39 @@
             font-size: 1.2em;
         }
 
+        /* Mobile card view for ranking */
+        .ranking-cards {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            padding: 12px;
+            background: transparent;
+        }
+
+        .ranking-card {
+            background: white;
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .ranking-left { display: flex; flex-direction: column; gap: 6px; }
+        .ranking-right { text-align: right; }
+        .ranking-card .rank { font-weight: 800; color: #333; font-size: 1.1em; }
+        .ranking-card .name { font-weight: 700; font-size: 1em; }
+        .ranking-card .meta { color: #888; font-size: 0.85em; }
+        .ranking-card .elo { color: #4CA1AF; font-weight: 800; font-size: 1.05em; }
+        .ranking-card .stats { display: flex; gap: 10px; justify-content: flex-end; margin-top: 6px; }
+
+        @media (max-width: 820px) {
+            .ranking-table { display: none; }
+            .ranking-cards { display: flex; }
+        }
+
         /* History styles */
         .history-row {
             padding: 8px 10px;
@@ -700,6 +817,10 @@
         .history-pair {
             text-align: center;
             flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         /* Toast notification */
@@ -738,6 +859,34 @@
         .search-box:focus {
             outline: none;
             border-color: #4CA1AF;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .clear-search-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: #999;
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            line-height: 1;
+            transition: all 0.2s;
+        }
+
+        .clear-search-btn:hover {
+            color: #333;
+            background: rgba(0,0,0,0.05);
         }
 
         .pairing-help {
@@ -858,12 +1007,22 @@
         </div>
 
         <div class="tabs">
-            <button class="tab active" onclick="switchTab('battle')">⚔️ Battle</button>
-            <button class="tab" onclick="switchTab('ranking')">🏆 Ranking</button>
-            <button class="tab" onclick="switchTab('history')">📜 History</button>
+            <button class="tab active" onclick="switchTab('battle')">Battle</button>
+            <button class="tab" onclick="switchTab('ranking')">Ranking</button>
+            <button class="tab" onclick="switchTab('history')">History</button>
         </div>
 
         <div id="battle-tab" class="tab-content active">
+            <div class="vs-divider">VS</div>
+            <div class="battle-area">
+                <div class="battle-container" id="battleContainer">
+                    <div class="no-battles">Selecteer eerst een gebruiker hierboven! 👆</div>
+                </div>
+                <p class="keyboard-hint" id="keyboardHint">
+                    ⌨️ Tip: Gebruik de pijltjestoetsen! ← Links | Rechts →
+                    <button class="keyboard-hint-close" onclick="closeKeyboardHint()" title="Sluiten">✕</button>
+                </p>
+            </div>
             <div class="pairing-controls-wrapper" style="margin:12px 0;">
                 <div style="display:flex;justify-content:center;align-items:center;">
                     <div style="font-size:0.95em;color:#444;display:flex;align-items:center;gap:8px;"></div>
@@ -890,19 +1049,14 @@
                     </div>
                 </div>
             </div>
-            <div class="vs-divider">VS</div>
-            <div class="battle-area">
-                <div class="battle-container" id="battleContainer">
-                    <div class="no-battles">Selecteer eerst een gebruiker hierboven! 👆</div>
-                </div>
-                <p class="keyboard-hint">⌨️ Tip: Gebruik de pijltjestoetsen! ← Links | Rechts →</p>
-            </div>
         </div>
-        
         <div id="history-tab" class="tab-content">
             <div style="display:flex;justify-content:center;align-items:center;margin-bottom:16px; gap:10px;">
                 <div class="autocomplete-container">
-                    <input id="historySearch" type="text" class="search-box" placeholder="🔍 Zoek matchup..." oninput="handleHistorySearchInput()" onkeydown="handleHistorySearchKeydown(event)" onfocus="showHistoryAutocomplete()" style="width:100%;" />
+                    <div class="search-input-wrapper">
+                        <input id="historySearch" type="text" class="search-box" placeholder="🔍 Zoek matchup..." oninput="handleHistorySearchInput()" onkeydown="handleHistorySearchKeydown(event)" onfocus="showHistoryAutocomplete()" style="width:100%;" />
+                        <button id="clearHistorySearchBtn" class="clear-search-btn" onclick="clearHistorySearch()" style="display:none;" title="Clear search">✕</button>
+                    </div>
                     <div id="historyAutocomplete" class="autocomplete-dropdown"></div>
                 </div>
             </div>
@@ -927,7 +1081,6 @@
                         <div class="stat-label">Gem. Battles/Achtbaan</div>
                     </div>
                 </div>
-                <button class="reset-btn" onclick="resetRankings()">🔄 Reset Alles</button>
             </div>
 
             <div class="filter-container">
@@ -952,6 +1105,11 @@
                     <tr><td colspan="9" class="no-battles">Selecteer eerst een gebruiker! 🎢</td></tr>
                 </tbody>
             </table>
+
+            <div class="reset-panel">
+                <div class="reset-copy">Reset alle rankings, battles en geschiedenis voor de huidige gebruiker.</div>
+                <button class="reset-btn" onclick="resetRankings()">🔄 Reset Alles</button>
+            </div>
         </div>
     </div>
 
@@ -1242,6 +1400,7 @@
         let coasterStats = {};
         let totalBattlesCount = 0;
         let currentBattle = null;
+        let isProcessingChoice = false;
         let currentSort = { column: 'elo', ascending: false };
         // History: stores past battles for current user
         let coasterHistory = [];
@@ -1521,6 +1680,8 @@
         function recordBattle(a, b, winnerName, loserName) {
             const entry = {
                 pairKey: pairKey(a.naam, b.naam),
+                left: a.naam,  // Store left position
+                right: b.naam, // Store right position
                 a: a.naam,
                 b: b.naam,
                 winner: winnerName,
@@ -1754,6 +1915,9 @@
 
         function chooseWinner(index) {
             if (!currentUser) return;
+            if (isProcessingChoice) return; // Prevent double-clicking
+            
+            isProcessingChoice = true; // Lock to prevent multiple submissions
             
             const winner = currentBattle[index];
             const loser = currentBattle[1 - index];
@@ -1790,8 +1954,8 @@
             const newRank = getRanking(winner.naam);
             const rankChange = oldRank - newRank; // positive = climbed
             
-            // record to history before saving
-            recordBattle(winner, loser, winner.naam, loser.naam);
+            // record to history before saving (pass in battle order: left=index 0, right=index 1)
+            recordBattle(currentBattle[0], currentBattle[1], winner.naam, loser.naam);
 
             // Save to localStorage (now also saves history)
             saveData();
@@ -1806,7 +1970,6 @@
                 const badge = document.createElement('div');
                 badge.className = 'rank-change-badge';
                 badge.innerHTML = `
-                    <span class="confetti">🎉</span>
                     <span class="arrow">↑</span>
                     <span>+${rankChange}</span>
                 `;
@@ -1824,6 +1987,7 @@
             // Load next battle after longer delay to show animations
             setTimeout(() => {
                 displayBattle();
+                isProcessingChoice = false; // Unlock for next battle
             }, 1500);
         }
 
@@ -1840,6 +2004,24 @@
             } else if (event.key === 'ArrowRight') {
                 event.preventDefault();
                 chooseWinner(1);
+            }
+        });
+
+        // Close keyboard hint and persist preference
+        function closeKeyboardHint() {
+            const hint = document.getElementById('keyboardHint');
+            if (hint) {
+                hint.classList.add('hidden');
+                localStorage.setItem('keyboardHintDismissed', 'true');
+            }
+        }
+
+        // Check if hint was previously dismissed
+        window.addEventListener('DOMContentLoaded', () => {
+            const dismissed = localStorage.getItem('keyboardHintDismissed');
+            if (dismissed === 'true') {
+                const hint = document.getElementById('keyboardHint');
+                if (hint) hint.classList.add('hidden');
             }
         });
 
@@ -1914,8 +2096,9 @@
             // Render only pair, highlight winner with a green pill and add a subtle delete button
             const rows = coasterHistory.slice().reverse().map((entry, idx) => {
                 const originalIndex = coasterHistory.length - 1 - idx;
-                let a = entry.a;
-                let b = entry.b;
+                // Use stored left/right positions if available, otherwise fall back to a/b
+                let a = entry.left || entry.a;
+                let b = entry.right || entry.b;
                 const winner = entry.winner;
 
                 const pairText = `${a} ↔ ${b}`;
@@ -1934,12 +2117,12 @@
                     }
                 }
 
-                const aHtml = (winner === a) ? `<span class="winner-pill">${escapeHtml(a)}</span>` : escapeHtml(a);
-                const bHtml = (winner === b) ? `<span class="winner-pill">${escapeHtml(b)}</span>` : escapeHtml(b);
+                const aHtml = (winner === a) ? `<span class="clickable-history-name" onclick="viewCoasterHistory('${a.replace(/'/g, "\\'")}')" style="cursor:pointer;"><span class="winner-pill">${escapeHtml(a)}</span></span>` : `<span class="clickable-history-name" onclick="viewCoasterHistory('${a.replace(/'/g, "\\'")}')" style="cursor:pointer;">${escapeHtml(a)}</span>`;
+                const bHtml = (winner === b) ? `<span class="clickable-history-name" onclick="viewCoasterHistory('${b.replace(/'/g, "\\'")}')" style="cursor:pointer;"><span class="winner-pill">${escapeHtml(b)}</span></span>` : `<span class="clickable-history-name" onclick="viewCoasterHistory('${b.replace(/'/g, "\\'")}')" style="cursor:pointer;">${escapeHtml(b)}</span>`;
 
                 return `
                     <div class="history-row">
-                        <div class="history-pair"><strong>${aHtml} &nbsp;↔&nbsp; ${bHtml}</strong></div>
+                        <div class="history-pair"><strong>${aHtml}</strong><span>↔</span><strong>${bHtml}</strong></div>
                         <div style="flex:0 0 auto;">
                             <button class="history-switch" title="Wissel winnaar" onclick="switchHistoryWinner(${originalIndex})">⇄</button>
                             <button class="history-delete" title="Verwijder deze matchup" onclick="deleteHistoryEntry(${originalIndex})">✖</button>
@@ -1965,7 +2148,20 @@
         }
 
         function handleHistorySearchInput() {
+            const input = document.getElementById('historySearch');
+            const clearBtn = document.getElementById('clearHistorySearchBtn');
+            clearBtn.style.display = input.value.trim() ? 'block' : 'none';
             showHistoryAutocomplete();
+        }
+
+        function clearHistorySearch() {
+            const input = document.getElementById('historySearch');
+            const clearBtn = document.getElementById('clearHistorySearchBtn');
+            input.value = '';
+            clearBtn.style.display = 'none';
+            const dropdown = document.getElementById('historyAutocomplete');
+            dropdown.classList.remove('show');
+            displayHistory();
         }
 
         function showHistoryAutocomplete() {
@@ -1993,7 +2189,9 @@
 
         function selectHistorySuggestion(name) {
             const input = document.getElementById('historySearch');
+            const clearBtn = document.getElementById('clearHistorySearchBtn');
             input.value = name;
+            clearBtn.style.display = 'block';
             document.getElementById('historyAutocomplete').classList.remove('show');
             displayHistory();
         }
@@ -2246,19 +2444,36 @@
             }
             
             const tbody = document.getElementById('rankingBody');
+            // Mobile card container
+            let rankingCardsContainer = document.getElementById('rankingCards');
+            if (!rankingCardsContainer) {
+                const container = document.createElement('div');
+                container.id = 'rankingCards';
+                container.className = 'ranking-cards';
+                const table = document.querySelector('.ranking-table');
+                table.parentNode.insertBefore(container, table.nextSibling);
+                rankingCardsContainer = container;
+            }
+
+
             
             if (totalBattles === 0) {
                 tbody.innerHTML = '<tr><td colspan="9" class="no-battles">Start met battlen om je ranking te zien! 🎢</td></tr>';
+                rankingCardsContainer.innerHTML = '';
                 return;
             }
-            
-            tbody.innerHTML = sorted.map((coaster, index) => {
+
+            // Build table rows and mobile cards
+            const rowsHtml = [];
+            const cardsHtml = [];
+
+            sorted.forEach((coaster, index) => {
                 const rank = index + 1;
                 const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '';
                 const winrate = coaster.battles > 0 ? ((coaster.wins / coaster.battles) * 100).toFixed(1) : '0.0';
                 const escapedName = coaster.name.replace(/'/g, "\\'");
-                
-                return `
+
+                rowsHtml.push(`
                     <tr>
                         <td><span class="rank-medal">${medal}</span>${rank}</td>
                         <td><strong>${coaster.name}</strong></td>
@@ -2270,8 +2485,29 @@
                         <td><span class="clickable-stat" onclick="viewCoasterHistory('${escapedName}')" title="View battle history">${coaster.losses}</span></td>
                         <td>${winrate}%</td>
                     </tr>
-                `;
-            }).join('');
+                `);
+
+                // Card for mobile
+                cardsHtml.push(`
+                    <div class="ranking-card" data-rank="${rank}">
+                        <div class="ranking-left">
+                            <div class="rank">${rank}</div>
+                            <div class="name">${coaster.name}</div>
+                            <div class="meta">${coaster.park} • ${coaster.manufacturer}</div>
+                        </div>
+                        <div class="ranking-right">
+                            <div class="elo">${Math.round(coaster.elo)}</div>
+                            <div class="stats">
+                                <span class="clickable-stat" onclick="viewCoasterHistory('${escapedName}')" title="View battle history">W: ${coaster.wins}</span>
+                                <span class="clickable-stat" onclick="viewCoasterHistory('${escapedName}')" title="View battle history">L: ${coaster.losses}</span>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            });
+
+            tbody.innerHTML = rowsHtml.join('');
+            rankingCardsContainer.innerHTML = cardsHtml.join('');
         }
 
         function filterRanking() {
@@ -2290,7 +2526,9 @@
             
             // Set the search box value to the coaster name
             const historySearch = document.getElementById('historySearch');
+            const clearBtn = document.getElementById('clearHistorySearchBtn');
             historySearch.value = coasterName;
+            clearBtn.style.display = 'block';
             
             // Trigger the search/filter
             displayHistory();
